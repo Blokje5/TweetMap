@@ -1,5 +1,7 @@
 global.__base = __dirname + '/';
-
+console.log(global.__base)
+const twitter = require('./twitter-connector/twitter.js')
+console.log('test')
 const path = require('path')
 const express = require('express');
 const app = express();

@@ -1,6 +1,7 @@
 const TwitterStreamChannels = require('twitter-stream-channels');
-const credentials = require('../config.json');
-console.log(credentials)
+const credentials = require(global.__base + 'config.json');
+const locationFinder = require(global.__base + 'twitter-connector/tweet-location-finder.js')
+
 const client = new TwitterStreamChannels(credentials);
 
 
@@ -13,7 +14,8 @@ const channels = {
 const stream = client.streamChannels({track:channels});
 
 stream.on('channels', (tweet) => {
-  console.log(tweet.user.location)
-  console.log(tweet.place)
+  locationFinder(tweet, (coordinates) => console.log(coordinates))
 })
+
+module.exports = {}
 
