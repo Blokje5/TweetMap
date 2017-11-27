@@ -1,12 +1,12 @@
 global.__base = __dirname + '/';
-console.log(global.__base)
 const twitter = require('./twitter-connector/twitter.js')
-console.log('test')
 const path = require('path')
 const express = require('express');
 const app = express();
+const socket_io    = require( "socket.io" );
 
-
+const io = socket_io();
+app.io = io;
 // Routes
 const index = require(global.__base + 'routes/index');
 
@@ -17,4 +17,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index)
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+twitter.createStream((coordinates) => console.log(coordinates))
+
+module.exports = app

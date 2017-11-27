@@ -4,7 +4,7 @@
   "description": "Backend for TweetRadius",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lennard Eijsackers",
@@ -14,6 +14,7 @@
     "mathjs": "^3.17.0",
     "pug": "^2.0.0-rc.4",
     "request": "^2.83.0",
+    "socket.io": "^2.0.4",
     "twitter-stream-channels": "^1.0.0"
   }
 }
