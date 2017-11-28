@@ -15,10 +15,10 @@ class GeoFinder {
                 if (err) { return console.log(err); }
                 // Always return the first result coordinates
                 if(body.geonames != undefined && body.geonames.length > 0) {
-                    const coordinates = {
-                        lng: body.geonames[0].lng,
-                        lat: body.geonames[0].lat
-                    }
+                    const coordinates = [
+                        body.geonames[0].lng,
+                        body.geonames[0].lat
+                    ]
                     callback(coordinates)
                 }
         })

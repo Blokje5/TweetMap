@@ -17,8 +17,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index)
 
+
+function constructPoint(coordinates) {
+    return {
+                    geometry: {
+                        type: 'Point',
+                        coordinates: coordinates
+                    },
+                    type: 'Feature'
+            }
+}
+
 io.of('/tweet').on('connection', function (socket) {
-  twitter.createStream((coordinates) => socket.emit('tweet', coordinates))
+  console.log('connected');
+  twitter.createStream((coordinates) => {
+      socket.emit('tweet', constructPoint(coordinates));
+  })
 });
 
 

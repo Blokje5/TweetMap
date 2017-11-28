@@ -15535,9 +15535,13 @@ var d3 = __webpack_require__(196);
 var eulerAngles = __webpack_require__(487);
 var io = __webpack_require__(488);
 
-var projection = d3.geoAzimuthalEqualArea().scale(340 / Math.PI * 2).center([0, 0]).clipAngle(90).translate([640, 400]);
+var projection = d3.geoAzimuthalEqualArea().scale(341 / Math.PI * 2).center([0, 0]).clipAngle(90).translate([640, 400]);
+
+var pointProjection = d3.geoAzimuthalEqualArea().scale(340 / Math.PI * 2).center([0, 0]).clipAngle(90).translate([640, 400]);
 
 var path = d3.geoPath().projection(projection);
+
+var pointPath = d3.geoPath().projection(pointProjection);
 
 var svg = d3.select('body').append('svg').attr('width', 1280).attr('height', 800);
 
@@ -15545,9 +15549,9 @@ var g = svg.append('g');
 
 d3.json('http://mbostock.github.io/d3/talk/20111018/world-countries.json', function (collection) {
     console.log(collection);
-    g = svg.selectAll('path').data(collection.features).enter().append('svg:path').attr('d', path).call(d3.drag().on('start', dragstarted).on('drag', dragged));
+    var p = g.selectAll('path').data(collection.features).enter().append('svg:path').attr('d', path).call(d3.drag().on('start', dragstarted).on('drag', dragged));
 
-    g.append('svg:title').text(function (d) {
+    p.append('svg:title').text(function (d) {
         return d.properties.name;
     });
 });
@@ -15567,16 +15571,29 @@ function dragged() {
     var gpos1 = projection.invert(d3.mouse(this));
     var o0 = projection.rotate();
     var o1 = eulerAngles(gpos0, gpos1, o0);
-    console.log(o1);
     projection.rotate(o1);
     svg.selectAll('path').attr('d', path);
 }
 
+var g2 = svg.append('g');
+/**
+ * render points for the locations of the tweets
+ * @param {*} tweetData array with [lng, lat] arrays of tweets
+ */
+function renderTweets(tweetData) {
+    g2.selectAll('path').data(tweetData).enter().append('svg:path').attr('d', pointPath).attr('fill', 'red');
+}
+
 // io connetion
+
+var tweetData = [];
+
 var tweetSocket = io('/tweet');
 
 tweetSocket.on('tweet', function (tweet) {
     console.log(tweet);
+    tweetData.push(tweet);
+    renderTweets(tweetData);
 });
 
 /***/ }),

@@ -14,7 +14,13 @@ class TwitterChannel {
     const stream = client.streamChannels({track:this.channels});
 
     stream.on('channels', (tweet) => {
-      locationFinder(tweet, (coordinates) => callback(coordinates))
+      locationFinder(tweet, (coordinates) => {
+        callback(coordinates)
+      })
+    })
+
+    stream.on('error', (error) => {
+      console.log(error);
     })
   }
 }
