@@ -15173,7 +15173,7 @@ var path = d3.geoPath().projection(projection);
 
 var pointPath = d3.geoPath().projection(pointProjection);
 
-var svg = d3.select('body').append('svg').attr('width', 1280).attr('height', 800);
+var svg = d3.select('#worldMap').append('svg').attr('width', 1280).attr('height', 800);
 
 var g = svg.append('g');
 
@@ -15211,19 +15211,58 @@ var g2 = svg.append('g');
  * @param {*} tweetData array with [lng, lat] arrays of tweets
  */
 function renderTweets(tweetData) {
-    g2.selectAll('path').data(tweetData).enter().append('svg:path').attr('d', pointPath).attr('fill', 'red');
+    var points = g2.selectAll('path').data(tweetData);
+    var removedPoints = points.exit().remove();
+
+    var addedPoints = points.enter().append('svg:path').attr('d', pointPath).attr('fill', 'red');
 }
 
 // io connetion
+/**
+ * Generates the url for the socket connection 
+ * @param {string} text - channel to follow
+ */
+function generateSocketURL(text) {
+    return '/tweet?channel=' + text;
+}
 
 var tweetData = [];
+window.tweetSocket = null;
 
-var tweetSocket = io('/tweet');
+function setupSocket(text, tweetData) {
+    // cleanup old connection
+    if (window.tweetSocket != null) {
+        window.tweetSocket.disconnect();
+    }
 
-tweetSocket.on('tweet', function (tweet) {
-    console.log(tweet);
-    tweetData.push(tweet);
-    renderTweets(tweetData);
+    // cleanup old tweets
+    if (tweetData.length > 0) {
+        tweetData = [];
+        // redraw with empty dataset
+        renderTweets(tweetData);
+    }
+
+    // generate url with token
+    var url = generateSocketURL(text);
+    // setup socket
+    window.tweetSocket = io(url);
+    window.tweetSocket.on('tweet', function (tweet) {
+        console.log('received');
+        // Limit size of tweet points
+        if (tweetData.length > 500) {
+            tweetData.shift();
+        }
+        tweetData.push(tweet);
+        renderTweets(tweetData);
+    });
+}
+// register event for input
+document.getElementById('tweetButton').addEventListener("click", function () {
+    // get channel
+    var text = document.getElementById('tweetInput').value;
+    if (text != '' && text != undefined) {
+        setupSocket(text, tweetData);
+    }
 });
 
 /***/ }),

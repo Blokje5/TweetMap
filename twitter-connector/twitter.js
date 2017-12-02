@@ -5,13 +5,13 @@ const locationFinder = require(global.__base + 'twitter-connector/tweet-location
 const client = new TwitterStreamChannels(credentials);
 
 class TwitterChannel {
-  constructor(client, channels) {
+  constructor(client) {
     this.client = client
-    this.channels = channels
   }
 
-  createStream(callback) {
-    const stream = client.streamChannels({track:this.channels});
+  createStream(channels, callback) {
+    console.log(channels)
+    const stream = client.streamChannels({track:channels});
 
     stream.on('channels', (tweet) => {
       locationFinder(tweet, (coordinates) => {
@@ -24,12 +24,6 @@ class TwitterChannel {
     })
   }
 }
-const channels = {
-    // "languages" : ['javascript','php','java','python','perl'],
-    // "js-frameworks" : ['angularjs','jquery','backbone','emberjs'],
-    // "web" : ['javascript','nodejs','html5','css','angularjs']
-    "politics": ['Donald Trump']
-};
 
-module.exports = new TwitterChannel(client, channels);
+module.exports = new TwitterChannel(client);
 

@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index)
 
-
+// transform coordinates into TopoJSON feature
 function constructPoint(coordinates) {
     return {
                     geometry: {
@@ -28,9 +28,20 @@ function constructPoint(coordinates) {
             }
 }
 
+// socket middleware
+io.use((socket, next) => {
+  const channel = socket.handshake.query.channel;
+  if (channel != '' && channel != undefined) {
+    return next();
+  }
+  return next(new Error('Topic is missing'));
+});
+
+// send tweet streams on connection
 io.of('/tweet').on('connection', function (socket) {
   console.log('connected');
-  twitter.createStream((coordinates) => {
+  const channel = socket.handshake.query.channel;
+  twitter.createStream(channel, (coordinates) => {
       socket.emit('tweet', constructPoint(coordinates));
   })
 });
