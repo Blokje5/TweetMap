@@ -43,6 +43,8 @@ module.exports= (tweet, callback) => {
     else if(tweet.user != null) {
         // Use the location of the user if tweet is not associated with a location
         // Use geonames api to find the location, fuzzy match to try to find best match
+
+        // TODO figure out if api is blocking?
         geoFinder.findLocation(tweet.user.location, callback)
     }
     return;

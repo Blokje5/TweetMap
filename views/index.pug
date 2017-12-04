@@ -2,10 +2,24 @@ doctype html
 html
   head
     title= title
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css", integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb", crossorigin="anonymous")
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     block content
-    div(id="worldMap") 
-    input(id="tweetInput")
-    button(id="tweetButton") Select topic
+    div(class="row")
+      div(class="col-sm-12 col-md-6")
+        div(id="worldMap") 
+        div(class="input-group input-group-sm")
+          span(class="input-group-addon") Topic
+          input(id="tweetInput", class="form-control", placeholder="enter a topic to track on twitter, for example Cats")
+          button(id="tweetButton", class="btn btn-primary btn-attach-right") Start!
+      div(class="col-sm-12 col-md-6")
+        div(class="jumbotron")
+          h1(class="display-3") Hello World
+          p(class="lead") This website is made to track location of tweets. It was created by Lennard Eijsackers as part of CS50
+          hr(class="my-4")
+          p Remarks: 
+          p Locations are in latitude, longitude format
+          p Locations are not always known from the twitter api: First, we look into the coordinates associated with a tweet. Secondly, we look if the tweet has a place associated with it. If all else fails, we check the location of the sender of the tweet.
+          p The location of the sender of the tweet is always entered by the sender as a string. To transform the string into a valid location, we use the geonames api. The first found match is considered the location of the sender.
     script(src='/javascript/bundle.js')
