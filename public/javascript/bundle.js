@@ -15226,8 +15226,33 @@ function generateSocketURL(text) {
     return '/tweet?channel=' + text;
 }
 
+function renderTweetsText(tweet) {
+    var text = tweet.text;
+    var div = document.createElement('div');
+    var p = document.createElement('p');
+    var textNode = document.createTextNode(tweet.text);
+    div.appendChild(p).appendChild(textNode);
+    return div;
+}
+
+function renderTweetsArray(tweet) {
+    var div = document.getElementById('tweets');
+    var childrenCount = div.children.length;
+    //
+    if (childrenCount >= 10) {
+        div.removeChild(div.lastChild);
+    }
+    div.prepend(renderTweetsText(tweet));
+    return;
+}
+
+function clearTweets() {
+    var div = document.getElementById('tweets');
+    div.innerHTML = '';
+}
 var tweetData = [];
 window.tweetSocket = null;
+var tweetArray = [];
 
 function setupSocket(text, tweetData) {
     // cleanup old connection
@@ -15242,18 +15267,26 @@ function setupSocket(text, tweetData) {
         renderTweets(tweetData);
     }
 
+    if (tweetArray.length > 0) {
+        clearTweets();
+    }
+
     // generate url with token
     var url = generateSocketURL(text);
     // setup socket
     window.tweetSocket = io(url);
     window.tweetSocket.on('tweet', function (tweet) {
-        console.log('received');
-        // Limit size of tweet points
-        if (tweetData.length > 500) {
-            tweetData.shift();
+        console.log(tweet);
+        // Limit amount of tweet points
+        if (tweet.coordinates != undefined && tweet.coordinates.geometry.coordinates.length > 0) {
+            if (tweetData.length > 500) {
+                tweetData.shift();
+            }
+            tweetData.push(tweet.coordinates);
+            renderTweets(tweetData);
         }
-        tweetData.push(tweet);
-        renderTweets(tweetData);
+
+        renderTweetsArray(tweet);
     });
 }
 // register event for input

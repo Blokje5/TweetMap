@@ -30,14 +30,22 @@ function boundingBoxCenter(boundingBox) {
 module.exports= (tweet, callback) => {
     if(tweet.coordinates != null) {
         // if coordinates are available, tweet has geo-location
-        callback(tweet.coordinates.coordinates[0]);
+        const tweetObject = {
+            text: tweet.text,
+            coordinates: tweet.coordinates.coordinates[0]
+        }
+        callback(tweetObject)
     }
 
     else if(tweet.place != null) {
         // Tweet has a place associated with it
         // calculate center of boundingBox and use that as a location
         const coordinates = boundingBoxCenter(tweet.place.bounding_box.coordinates[0])
-        callback(coordinates)
+        const tweetObject = {
+            text: tweet.text,
+            coordinates: coordinates
+        }
+        callback(tweetObject)
     }
 
     else if(tweet.user != null) {
@@ -45,8 +53,14 @@ module.exports= (tweet, callback) => {
         // Use geonames api to find the location, fuzzy match to try to find best match
 
         // TODO figure out if api is blocking?
-        geoFinder.findLocation(tweet.user.location, callback)
+        geoFinder.findLocation(tweet, tweet.user.location, callback)
     }
+    // Return just the tweet text
+    const tweetObject = {
+        text: tweet.text,
+        coordinates: []
+    }
+    callback(tweetObject)
     return;
     // sadly no known location for the user
 }

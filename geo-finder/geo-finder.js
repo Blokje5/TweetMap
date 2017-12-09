@@ -9,7 +9,7 @@ class GeoFinder {
         return `/searchJSON?q=${query}&maxRows=10&fuzzy=${fuzzy}&username=cs50Lennard`
     }
 
-    async findLocation(location, callback) {
+    async findLocation(tweet, location, callback) {
         const path = this.getPath(location, 0.8)
         request('http://' + this.host + path, { json: true }, (err, res, body) => {
                 if (err) { return console.log(err); }
@@ -19,7 +19,11 @@ class GeoFinder {
                         body.geonames[0].lng,
                         body.geonames[0].lat
                     ]
-                    callback(coordinates)
+                    const tweetObject = {
+                        text: tweet.text,
+                        coordinates: coordinates
+                    }
+                    callback(tweetObject)
                 }
         })
     }

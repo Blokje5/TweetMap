@@ -41,8 +41,12 @@ io.use((socket, next) => {
 io.of('/tweet').on('connection', function (socket) {
   console.log('connected');
   const channel = socket.handshake.query.channel;
-  twitter.createStream(channel, (coordinates) => {
-      socket.emit('tweet', constructPoint(coordinates));
+  twitter.createStream(channel, (tweet) => {
+      const finalTweet = {
+        text: tweet.text,
+        coordinates: constructPoint(tweet.coordinates)
+      }
+      socket.emit('tweet', finalTweet);
   })
 });
 
