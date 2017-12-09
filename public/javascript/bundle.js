@@ -15165,15 +15165,20 @@ var d3 = __webpack_require__(194);
 var eulerAngles = __webpack_require__(485);
 var io = __webpack_require__(486);
 
-var projection = d3.geoAzimuthalEqualArea().scale(341 / Math.PI * 2).center([0, 0]).clipAngle(90).translate([640, 400]);
+var worldMapWidth = document.getElementById('worldMap').clientWidth;
 
-var pointProjection = d3.geoAzimuthalEqualArea().scale(340 / Math.PI * 2).center([0, 0]).clipAngle(90).translate([640, 400]);
+var projection = d3.geoAzimuthalEqualArea().scale(worldMapWidth / 3 / Math.PI * 2) //341
+.center([0, 0]).clipAngle(90).translate([worldMapWidth / 2, 0.625 * (worldMapWidth / 2)]); // 640 400
+
+var pointProjection = d3.geoAzimuthalEqualArea().scale(worldMapWidth / 3 / Math.PI * 2) //340
+.center([0, 0]).clipAngle(90).translate([worldMapWidth / 2, 0.625 * (worldMapWidth / 2)]);
 
 var path = d3.geoPath().projection(projection);
 
 var pointPath = d3.geoPath().projection(pointProjection);
 
-var svg = d3.select('#worldMap').append('svg').attr('width', 1280).attr('height', 800);
+var svg = d3.select('#worldMap').append('svg').attr('width', worldMapWidth) // 1280
+.attr('height', 0.625 * worldMapWidth); // 800
 
 var g = svg.append('g');
 

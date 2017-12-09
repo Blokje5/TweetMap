@@ -2,17 +2,19 @@ const d3 = require('d3');
 const eulerAngles = require('./math.js');
 const io = require('socket.io-client');
 
+const worldMapWidth = document.getElementById('worldMap').clientWidth;
+
 let projection = d3.geoAzimuthalEqualArea()
-    .scale(341 / Math.PI * 2)
+    .scale((worldMapWidth / 3) / Math.PI * 2) //341
     .center([0, 0])
     .clipAngle(90)
-    .translate([640, 400]);
+    .translate([worldMapWidth / 2, 0.625 * (worldMapWidth / 2)]); // 640 400
 
  let pointProjection = d3.geoAzimuthalEqualArea()
-    .scale(340 / Math.PI * 2)
+    .scale((worldMapWidth / 3) / Math.PI * 2) //340
     .center([0, 0])
     .clipAngle(90)
-    .translate([640, 400]);
+    .translate([worldMapWidth / 2, 0.625 * (worldMapWidth / 2)]);
 
 let path = d3.geoPath()
     .projection(projection);
@@ -20,9 +22,11 @@ let path = d3.geoPath()
 let pointPath = d3.geoPath()
     .projection(pointProjection);
 
+
+
 let svg = d3.select('#worldMap').append('svg')
-    .attr('width', 1280)
-    .attr('height', 800);
+    .attr('width', worldMapWidth) // 1280
+    .attr('height', 0.625 * worldMapWidth); // 800
 
 let g = svg.append('g');
 
