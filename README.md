@@ -2,6 +2,9 @@
 
 A worldmap displaying the location of tweets
 
+# location
+[Find the project on github] (https://github.com/Blokje5/TweetMap)
+
 ## installation
 * git clone the project
 * run npm install inside the project directory
