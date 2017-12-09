@@ -8,6 +8,7 @@ A worldmap displaying the location of tweets
 ## installation
 * git clone the project
 * run npm install inside the project directory
+* run npm run watch in another terminal (compiles frontend sources)
 * create a config.json file with the following structure:
 ```
 {
